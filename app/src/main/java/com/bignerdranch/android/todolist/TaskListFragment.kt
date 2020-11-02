@@ -18,7 +18,7 @@ class TaskListFragment:Fragment() {
 
         view.findViewById<FloatingActionButton>(R.id.add_task).setOnClickListener {
             findNavController().navigate(
-                TaskListFragmentDirections.actionTaskListFragmentToAddTask2()
+                TaskListFragmentDirections.actionTaskListFragmentToAddTask()
             )
         }
 

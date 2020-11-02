@@ -11,11 +11,11 @@
         android:label="TaskListFragment"
         tools:layout="@layout/fragment_task_list">
         <action
-            android:id="@+id/action_taskListFragment_to_addTask2"
-            app:destination="@id/addTask2" />
+            android:id="@+id/action_taskListFragment_to_addTask"
+            app:destination="@id/addTask" />
     </fragment>
     <fragment
-        android:id="@+id/addTask2"
+        android:id="@+id/addTask"
         android:name="com.bignerdranch.android.todolist.AddTask"
         android:label="AddTask"
         tools:layout="@layout/fragment_add_task"/>
