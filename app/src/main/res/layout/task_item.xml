@@ -9,12 +9,13 @@
     android:orientation="vertical">
 
     <com.google.android.material.radiobutton.MaterialRadioButton
-        android:id="@+id/materialRadioButton"
+        android:id="@+id/is_task_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/is_the_task_completed"/>
 
     <TextView
         android:id="@+id/text_title"
@@ -23,7 +24,7 @@
         android:layout_margin="16dp"
         android:text="@string/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/materialRadioButton"
+        app:layout_constraintStart_toEndOf="@+id/is_task_done"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -44,7 +45,7 @@
         android:text="@string/date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/materialRadioButton"
+        app:layout_constraintStart_toEndOf="@+id/is_task_done"
         app:layout_constraintTop_toBottomOf="@+id/text_title" />
 
     <TextView

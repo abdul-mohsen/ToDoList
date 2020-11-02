@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_item_search"
+        android:title="@string/search"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
+
+    <item android:id="@+id/sort_by_option"
+        android:title="@string/sort_by"
+        app:showAsAction="never" >
+        <menu>
+            <item android:id="@+id/due_data_option"
+                android:title="@string/due_date"/>
+
+            <item android:id="@+id/creation_data_option"
+                android:title="@string/creation_date"/>
+        </menu>
+    </item>
+
+    <item android:id="@+id/group_by_option"
+        android:title="@string/group_by"
+        app:showAsAction="never">
+
+        <menu>
+            <item android:id="@+id/tag_option"
+                android:title="@string/tag"/>
+        </menu>
+    </item>
+
+    <item android:id="@+id/Setting_by_button"
+        android:title="@string/setting"
+        app:showAsAction="never" />
+
+</menu>

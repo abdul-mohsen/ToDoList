@@ -5,4 +5,12 @@
     <string name="date">Date</string>
     <string name="status">Status</string>
     <string name="add_new_task">Add new task</string>
+    <string name="is_the_task_completed">is the task completed</string>
+    <string name="search">Search</string>
+    <string name="sort_by">Sort BY</string>
+    <string name="setting">Setting</string>
+    <string name="group_by">Group By</string>
+    <string name="due_date">Due Date</string>
+    <string name="creation_date">Creation Date</string>
+    <string name="tag">Tag</string>
 </resources>
