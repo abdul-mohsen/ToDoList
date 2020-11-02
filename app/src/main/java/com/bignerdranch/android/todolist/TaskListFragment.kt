@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TaskListFragment:Fragment() {
     override fun onCreateView(
@@ -15,9 +16,11 @@ class TaskListFragment:Fragment() {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
 
-//        view.findViewById<Button>(R.id.add_task).setOnClickListener {
-//            findNavController().navigate()
-//        }
+        view.findViewById<FloatingActionButton>(R.id.add_task).setOnClickListener {
+            findNavController().navigate(
+                TaskListFragmentDirections.actionTaskListFragmentToAddTask2()
+            )
+        }
 
         return view
     }
