@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">To Do List</string>
+    <string name="title">Title</string>
+    <string name="tag">Tag</string>
+    <string name="date">Date</string>
+    <string name="status">Status</string>
+    <string name="add_new_task">Add new task</string>
 </resources>
