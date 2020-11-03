@@ -1,5 +1,6 @@
 package com.bignerdranch.android.todolist
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 private const val TAG = "AddTask"
@@ -77,25 +79,43 @@ class AddTask:Fragment() {
 
     override fun onStart() {
         super.onStart()
-        creationDateText.text = task.creationDate.toString()
 
         doneButton.setOnClickListener {
             task.titile = titleEdit.text.toString()
             task.description = descriptionEdit.text.toString()
-
+            taskViewModel.updateTask(task)
 
             findNavController().popBackStack()
+        }
+
+        discardButton.setOnClickListener{
+            context?.let {
+                MaterialAlertDialogBuilder(it)
+                    .setTitle("Discard Changes!!")
+                    .setMessage("Do you want to discard changes")
+                    .setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+                        dialogInterface.cancel()
+                        findNavController().popBackStack()
+                    }
+                    .setNegativeButton("No") { dialogInterface: DialogInterface, i: Int ->
+                        dialogInterface.cancel()
+                    }
+                    .show()
+            }
+
         }
     }
 
     override fun onStop() {
         super.onStop()
-        taskViewModel.updateTask(task)
         (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     fun updateUI(){
-
+        creationDateText.text = task.creationDate.toString()
+        titleEdit.setText(task.titile)
+        dueDateEdit.text = task.date?.toString()?:""
+        descriptionEdit.setText(task.description)
     }
 
 }

@@ -8,7 +8,7 @@ class AddTaskViewModel: ViewModel() {
     private val taskIdLiveData = MutableLiveData<UUID>()
     private val taskRepository = TaskRepository.get()
 
-    val taskLiveData: LiveData<Task?> = taskIdLiveData.switchMap { id ->
+    val taskLiveData: LiveData<Task?> = Transformations.switchMap(taskIdLiveData) { id ->
         taskRepository.getTask(id)
     }
 
