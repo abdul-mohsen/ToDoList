@@ -10,7 +10,7 @@ import java.util.*
 @Parcelize
 data class Task(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
-    var titile: String,
+    var titile: String = "",
     var description: String = "",
     var date: Date? = null,
     val creationDate: Date = Date(),

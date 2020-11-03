@@ -18,5 +18,9 @@
         android:id="@+id/addTask"
         android:name="com.bignerdranch.android.todolist.AddTask"
         android:label="AddTask"
-        tools:layout="@layout/fragment_add_task"/>
+        tools:layout="@layout/fragment_add_task">
+        <argument
+            android:name="taskId"
+            app:argType="java.util.UUID" />
+    </fragment>
 </navigation>
