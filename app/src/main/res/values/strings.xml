@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">To Do List</string>
-    <string name="title" />
+    <string name="title">Title</string>
     <string name="tag">Tag</string>
     <string name="date">Date</string>
     <string name="status">Status</string>
@@ -33,4 +33,5 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="discard_changes">Discard Changes</string>
     <string name="done">Done</string>
+    <string name="delete_the_task">Delete the task</string>
 </resources>

@@ -102,7 +102,6 @@ class TaskListFragment:Fragment() {
             isTaskDoneCheckBox.isChecked = task.status.ordinal == 0
             titleText.text = task.titile
             dateText.text = task.date?.toString()?:""
-
         }
 
         override fun onClick(v: View?) {
@@ -110,7 +109,6 @@ class TaskListFragment:Fragment() {
                 TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
             )
         }
-
     }
 
     private inner class TaskAdapter(var tasks: List<Task>): RecyclerView.Adapter<TaskHolder>(){
@@ -118,15 +116,12 @@ class TaskListFragment:Fragment() {
             val layoutInflater = LayoutInflater.from(context)
             val view = layoutInflater.inflate(R.layout.task_item, parent, false)
             return TaskHolder(view)
-
         }
 
         override fun onBindViewHolder(holder: TaskHolder, position: Int) {
             holder.bind(tasks[position])
         }
-
         override fun getItemCount(): Int = tasks.size
-
 
     }
 }

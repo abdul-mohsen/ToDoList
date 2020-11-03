@@ -17,6 +17,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 private const val TAG = "AddTask"
+private const val DATE_KEY = "Date"
+
 
 class AddTask:Fragment() {
 
@@ -29,7 +31,7 @@ class AddTask:Fragment() {
     private lateinit var subtaskEdit: EditText
     private lateinit var timeButton: Button
     private lateinit var locationButton: Button
-    private lateinit var dueDateEdit: TextView
+    private lateinit var dueDateText: TextView
     private lateinit var descriptionEdit: EditText
     private lateinit var creationDateText: TextView
     private val taskViewModel:AddTaskViewModel by lazy {
@@ -59,7 +61,7 @@ class AddTask:Fragment() {
         subtaskEdit = view.findViewById(R.id.suntask_edit)
         timeButton = view.findViewById(R.id.time_button)
         locationButton = view.findViewById(R.id.location_button)
-        dueDateEdit = view.findViewById(R.id.due_date_text)
+        dueDateText = view.findViewById(R.id.due_date_text)
         descriptionEdit = view.findViewById(R.id.description_edit)
         creationDateText = view.findViewById(R.id.creation_date_text)
 
@@ -75,6 +77,16 @@ class AddTask:Fragment() {
                 updateUI()
             }}
         )
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.apply {
+            getLiveData<Date>(DATE_KEY).observe(
+                viewLifecycleOwner,
+                {
+                    task.date = it
+                    updateUI()
+                }
+            )
+        }
     }
 
     override fun onStart() {
@@ -85,7 +97,7 @@ class AddTask:Fragment() {
             task.description = descriptionEdit.text.toString()
             taskViewModel.updateTask(task)
 
-            findNavController().popBackStack()
+            findNavController().navigateUp()
         }
 
         discardButton.setOnClickListener{
@@ -93,15 +105,21 @@ class AddTask:Fragment() {
                 MaterialAlertDialogBuilder(it)
                     .setTitle("Discard Changes!!")
                     .setMessage("Do you want to discard changes")
-                    .setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+                    .setPositiveButton("Yes") { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
-                        findNavController().popBackStack()
+                        findNavController().navigateUp()
                     }
-                    .setNegativeButton("No") { dialogInterface: DialogInterface, i: Int ->
+                    .setNegativeButton("No") { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.cancel()
                     }
                     .show()
             }
+        }
+
+        dueDateText.setOnClickListener {
+            findNavController().navigate(
+                AddTaskDirections.actionAddTaskToDatePickerFragment(task.date)
+            )
 
         }
     }
@@ -114,8 +132,7 @@ class AddTask:Fragment() {
     fun updateUI(){
         creationDateText.text = task.creationDate.toString()
         titleEdit.setText(task.titile)
-        dueDateEdit.text = task.date?.toString()?:""
+        dueDateText.text = task.date?.toString()?:"Date"
         descriptionEdit.setText(task.description)
     }
-
 }
