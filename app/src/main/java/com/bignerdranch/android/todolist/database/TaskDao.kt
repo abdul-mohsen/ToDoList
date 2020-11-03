@@ -15,12 +15,12 @@ interface TaskDao {
     fun getTasks(): LiveData<List<Task>>
 
     @Query("SELECT * FROM task WHERE id=(:id)")
-    fun getTask(id: UUID): LiveData<Task>
+    fun getTask(id: UUID): LiveData<Task?>
 
     @Update
-    fun updateTasks(task:Task)
+    fun updateTask(task:Task)
 
     @Insert
-    fun insertTasks(task:Task)
+    fun insertTask(task:Task)
 
 }

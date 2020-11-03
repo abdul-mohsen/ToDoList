@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TaskListFragment:Fragment() {
+
+    private val taskListViewModel: TaskListViewModel by lazy {
+        ViewModelProvider(this).get(TaskListViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,6 +25,7 @@ class TaskListFragment:Fragment() {
 
         view.findViewById<FloatingActionButton>(R.id.add_task).setOnClickListener {
             val task = Task()
+            taskListViewModel.addTask(task)
             findNavController().navigate(
                 TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
             )

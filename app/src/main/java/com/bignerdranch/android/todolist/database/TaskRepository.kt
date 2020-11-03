@@ -22,17 +22,17 @@ class TaskRepository private constructor(context: Context){
     private val executor = Executors.newSingleThreadExecutor()
 
     fun getTasks(): LiveData<List<Task>> = taskDao.getTasks()
-    fun getTask(id: UUID): LiveData<Task> = taskDao.getTask(id)
+    fun getTask(id: UUID): LiveData<Task?> = taskDao.getTask(id)
 
-    fun updateTasks(task: Task){
+    fun updateTask(task: Task){
         executor.execute {
-            taskDao.updateTasks(task)
+            taskDao.updateTask(task)
         }
     }
 
     fun addTask(task: Task){
         executor.execute {
-            taskDao.insertTasks(task)
+            taskDao.insertTask(task)
         }
     }
 
