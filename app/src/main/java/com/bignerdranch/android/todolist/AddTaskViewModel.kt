@@ -1,15 +1,23 @@
 package com.bignerdranch.android.todolist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.bignerdranch.android.todolist.database.TaskRepository
 import java.util.*
 
 class AddTaskViewModel: ViewModel() {
-    val taskIdLiveData = MutableLiveData<UUID>()
+    private val taskIdLiveData = MutableLiveData<UUID>()
+    private val taskRepository = TaskRepository.get()
+
+    val taskLiveData: LiveData<Task?> = taskIdLiveData.switchMap { id ->
+        taskRepository.getTask(id)
+    }
 
     fun loadTask(taskId: UUID){
         taskIdLiveData.value = taskId
     }
+
+    fun updateTask(task: Task) {
+        taskRepository.updateTask(task)
+    }
+
 }
