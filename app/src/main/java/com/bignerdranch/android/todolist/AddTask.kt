@@ -2,6 +2,7 @@ package com.bignerdranch.android.todolist
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -15,8 +16,9 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
-private const val TAG = "AddTask"
 private const val DATE_KEY = "Date"
+private const val DATE_FORMAT = "EEEE dd/MM/yy"
+
 
 
 class AddTask:Fragment() {
@@ -128,9 +130,11 @@ class AddTask:Fragment() {
     }
 
     private fun updateUI(){
-        creationDateText.text = task.creationDate.toString()
+        creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
         titleEdit.setText(task.titile)
-        dueDateText.text = task.date?.toString()?:"Date"
+        task.date?.let{
+            dueDateText.text = DateFormat.format(DATE_FORMAT, it)
+        }
         descriptionEdit.setText(task.description)
     }
 }

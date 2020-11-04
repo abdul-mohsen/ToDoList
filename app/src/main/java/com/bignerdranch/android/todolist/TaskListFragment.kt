@@ -4,12 +4,14 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.format.DateFormat
 import android.text.style.StrikethroughSpan
 import android.util.Log
 import android.view.*
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -17,6 +19,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
+
+private const val DATE_FORMAT = "EEEE dd/MM/yy"
 
 class TaskListFragment:Fragment() {
 
@@ -91,7 +95,6 @@ class TaskListFragment:Fragment() {
     private inner class TaskHolder(view:View): RecyclerView.ViewHolder(view), View.OnClickListener{
 
         private lateinit var task: Task
-        private val isTaskDoneCheckBox: CheckBox = view.findViewById(R.id.is_task_done)
         private val titleText: TextView = view.findViewById(R.id.text_title)
         private val tagText: TextView = view.findViewById(R.id.text_tag)
         private val dateText: TextView = view.findViewById(R.id.text_date)
@@ -99,12 +102,7 @@ class TaskListFragment:Fragment() {
         private val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
 
         init {
-            view.setOnClickListener(this)
-            isTaskDoneCheckBox.apply {
-                setOnClickListener {
-                    changeState(this.isChecked)
-                }
-            }
+            itemView.setOnClickListener(this)
 
             deleteButton.setOnClickListener {
                 taskChangesMap[task.id] = null
@@ -117,15 +115,18 @@ class TaskListFragment:Fragment() {
             val spannable = SpannableString(task.titile)
 
             if (task.status.ordinal == 0){
-                isTaskDoneCheckBox.isChecked = true
                 spannable.setSpan(StrikethroughSpan(), 0, task.titile.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 deleteButton.visibility = VISIBLE
+                titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_gray))
             } else {
-                isTaskDoneCheckBox.isChecked = false
                 deleteButton.visibility = INVISIBLE
+                titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.black))
             }
             titleText.text = spannable
-            dateText.text = task.date?.toString()?:""
+            dateText.text = getString(R.string.date)
+            task.date?.let {
+                dateText.text = DateFormat.format(DATE_FORMAT, it)
+            }
             statusText.text = task.status.toString()
         }
 
