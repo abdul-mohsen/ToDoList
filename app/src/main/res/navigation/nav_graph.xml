@@ -35,5 +35,8 @@
             app:argType="java.util.Date"
             app:nullable="true"
             android:defaultValue="@null" />
+        <argument
+            android:name="key"
+            app:argType="string" />
     </dialog>
 </navigation>

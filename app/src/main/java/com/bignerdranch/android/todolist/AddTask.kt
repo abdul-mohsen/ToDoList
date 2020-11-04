@@ -118,7 +118,7 @@ class AddTask:Fragment() {
 
         dueDateText.setOnClickListener {
             findNavController().navigate(
-                AddTaskDirections.actionAddTaskToDatePickerFragment(task.date)
+                AddTaskDirections.actionAddTaskToDatePickerFragment(taskDate = task.date, key = DATE_KEY)
             )
 
         }
