@@ -16,11 +16,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.task_item.*
 import java.util.*
+import kotlin.properties.Delegates
 
 private const val DATE_FORMAT = "EEEE dd/MM/yy"
 
@@ -30,7 +32,7 @@ class TaskListFragment:Fragment() {
     private lateinit var newTaskEdit:EditText
     private lateinit var addTaskButton: FloatingActionButton
     private lateinit var taskRecyclerView: RecyclerView
-    private var taskAdapter: TaskAdapter? = TaskAdapter(emptyList())
+    private var taskAdapter: TaskAdapter = TaskAdapter()
     private val taskListViewModel: TaskListViewModel by lazy {
         ViewModelProvider(this).get(TaskListViewModel::class.java)
     }
@@ -48,15 +50,15 @@ class TaskListFragment:Fragment() {
 
         taskRecyclerView = view.findViewById(R.id.task_list)
         taskRecyclerView.adapter = taskAdapter
-        val callback = taskAdapter?.let {
-            DragManagerAdapter(it,
-                ItemTouchHelper.ACTION_STATE_IDLE,
-                ItemTouchHelper.RIGHT.or(ItemTouchHelper.LEFT))}
-        val helper = callback?.let { ItemTouchHelper(it) }
-        helper?.attachToRecyclerView(taskRecyclerView)
+        val callback = DragManagerAdapter(
+            taskAdapter,
+            ItemTouchHelper.ACTION_STATE_IDLE,
+            ItemTouchHelper.RIGHT.or(ItemTouchHelper.LEFT))
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(taskRecyclerView)
 
-        newTaskEdit = view.findViewById<EditText>(R.id.new_task_edit)
-        addTaskButton = view.findViewById<FloatingActionButton>(R.id.add_task)
+        newTaskEdit = view.findViewById(R.id.new_task_edit)
+        addTaskButton = view.findViewById(R.id.add_task)
 
         return view
     }
@@ -72,18 +74,18 @@ class TaskListFragment:Fragment() {
             sortByState[0] = sortByState[0].next()
             when (sortByState[0]) {
                 SortOptionStatus.DES -> {
-                    taskAdapter?.tasks?.let { tasks ->
+                    taskAdapter.tasks.let { tasks ->
                         sortByState[1] = SortOptionStatus.IDLE
                         menu.findItem(R.id.creation_data_option).setIcon(0)
-                        taskAdapter?.tasks = tasks.sortedByDescending { it.date }
+                        taskAdapter.tasks = tasks.sortedByDescending { it.date }
                         taskRecyclerView.adapter = taskAdapter
                         item.setIcon(R.drawable.ic_double_arrow_down)
                     }
                     true
                 }
                 SortOptionStatus.AES -> {
-                    taskAdapter?.tasks?.let { tasks ->
-                        taskAdapter?.tasks = tasks.sortedBy { it.date }
+                    taskAdapter.tasks.let { tasks ->
+                        taskAdapter.tasks = tasks.sortedBy { it.date }
                         taskRecyclerView.adapter = taskAdapter
                         item.setIcon(R.drawable.ic_double_arrow_up)
                     }
@@ -99,18 +101,18 @@ class TaskListFragment:Fragment() {
             sortByState[1] = sortByState[1].next()
             when (sortByState[1]) {
                 SortOptionStatus.DES -> {
-                taskAdapter?.tasks?.let { tasks ->
-                    sortByState[0] = SortOptionStatus.IDLE
-                    menu.findItem(R.id.due_data_option).setIcon(0)
-                    taskAdapter?.tasks = tasks.sortedByDescending { it.creationDate }
-                    taskRecyclerView.adapter = taskAdapter
-                    item.setIcon(R.drawable.ic_double_arrow_down)
-                }
+                    taskAdapter.tasks.let { tasks ->
+                        sortByState[0] = SortOptionStatus.IDLE
+                        menu.findItem(R.id.due_data_option).setIcon(0)
+                        taskAdapter.tasks = tasks.sortedByDescending { it.creationDate }
+                        taskRecyclerView.adapter = taskAdapter
+                        item.setIcon(R.drawable.ic_double_arrow_down)
+                    }
                 true
             }
             SortOptionStatus.AES -> {
-                taskAdapter?.tasks?.let { tasks ->
-                    taskAdapter?.tasks = tasks.sortedBy { it.creationDate }
+                taskAdapter.tasks.let { tasks ->
+                    taskAdapter.tasks = tasks.sortedBy { it.creationDate }
                     taskRecyclerView.adapter = taskAdapter
                     item.setIcon(R.drawable.ic_double_arrow_up)
                 }
@@ -124,8 +126,6 @@ class TaskListFragment:Fragment() {
         }
         R.id.setting_option -> true
         else -> super.onOptionsItemSelected(item)
-
-
     }
 
     override fun onStart() {
@@ -154,7 +154,7 @@ class TaskListFragment:Fragment() {
                 }
             }
 
-        newTaskEdit.setOnEditorActionListener { v, actionId, event ->
+        newTaskEdit.setOnEditorActionListener { _, actionId, event ->
             if (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE)) {
                 val taskTitle = newTaskEdit.text.toString()
                 if (taskTitle.isBlank()) {
@@ -174,11 +174,7 @@ class TaskListFragment:Fragment() {
     }
 
     private fun updateUI(tasks: List<Task>){
-        taskAdapter?.let {
-            it.tasks = tasks
-        } ?: run {
-            taskAdapter = TaskAdapter(tasks)
-        }
+        taskAdapter.tasks = tasks
         taskRecyclerView.adapter = taskAdapter
     }
 
@@ -235,7 +231,14 @@ class TaskListFragment:Fragment() {
         }
     }
 
-    private inner class TaskAdapter(var tasks: List<Task>): RecyclerView.Adapter<TaskHolder>(){
+    private inner class TaskAdapter()
+        : ListAdapter<Task, TaskHolder>(TaskItemDiffCallback()),
+        AutoUpdatableAdapter{
+
+        var tasks: List<Task> by Delegates.observable(emptyList()) { prop, oldList, newList ->
+            autoNotify(oldList, newList) { o, n -> o.id == n.id }
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
             val layoutInflater = LayoutInflater.from(context)
             val view = layoutInflater.inflate(R.layout.task_item, parent, false)
@@ -253,10 +256,14 @@ class TaskListFragment:Fragment() {
                 removeAt(position)
                 toList()
             }
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, tasks.size)
         }
+    }
+    private class TaskItemDiffCallback: DiffUtil.ItemCallback<Task>(){
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean =
+            oldItem.id == newItem.id
 
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean =
+            oldItem == newItem
     }
 
     private class DragManagerAdapter(
