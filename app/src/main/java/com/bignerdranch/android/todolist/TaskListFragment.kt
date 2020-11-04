@@ -47,7 +47,7 @@ class TaskListFragment:Fragment() {
     ): View? {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
-
+        taskAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         taskRecyclerView = view.findViewById(R.id.task_list)
         taskRecyclerView.adapter = taskAdapter
         val callback = DragManagerAdapter(
@@ -141,7 +141,7 @@ class TaskListFragment:Fragment() {
 
         addTaskButton.setOnClickListener {
                 val taskTitle = newTaskEdit.text.toString()
-                if (taskTitle.isEmpty()) {
+                if (taskTitle.isBlank()) {
                     val task = Task()
                     taskListViewModel.addTask(task)
                     findNavController().navigate(
@@ -161,6 +161,7 @@ class TaskListFragment:Fragment() {
                     val task = Task(titile = taskTitle)
                     taskListViewModel.addTask(task)
                     newTaskEdit.setText("")
+//                    taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
                 }
             }
             false
@@ -171,11 +172,6 @@ class TaskListFragment:Fragment() {
         super.onStop()
         taskListViewModel.updateTasks(taskChangesMap)
         taskChangesMap.clear()
-    }
-
-    private fun updateUI(tasks: List<Task>){
-        taskAdapter.tasks = tasks
-        taskRecyclerView.adapter = taskAdapter
     }
 
     private inner class TaskHolder(view:View): RecyclerView.ViewHolder(view), View.OnClickListener{
@@ -231,7 +227,7 @@ class TaskListFragment:Fragment() {
         }
     }
 
-    private inner class TaskAdapter()
+    private inner class TaskAdapter
         : ListAdapter<Task, TaskHolder>(TaskItemDiffCallback()),
         AutoUpdatableAdapter{
 
@@ -313,5 +309,11 @@ class TaskListFragment:Fragment() {
         val values = enumValues<T>()
         val nextOrdinal = (ordinal + 1) % values.size
         return values[nextOrdinal]
+    }
+
+    private fun updateUI(tasks: List<Task>){
+        taskAdapter.tasks = tasks
+        taskRecyclerView.adapter = taskAdapter
+        taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
     }
 }
