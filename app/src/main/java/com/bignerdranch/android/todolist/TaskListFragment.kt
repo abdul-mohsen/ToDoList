@@ -24,6 +24,7 @@ private const val DATE_FORMAT = "EEEE dd/MM/yy"
 
 class TaskListFragment:Fragment() {
 
+    private lateinit var newTaskEdit:EditText
     private lateinit var taskRecyclerView: RecyclerView
     private var taskAdapter: TaskAdapter? = TaskAdapter(emptyList())
     private val taskListViewModel: TaskListViewModel by lazy {
@@ -48,13 +49,20 @@ class TaskListFragment:Fragment() {
         val helper = callback?.let { ItemTouchHelper(it) }
         helper?.attachToRecyclerView(taskRecyclerView)
 
-
+        newTaskEdit = view.findViewById<EditText>(R.id.new_task_edit)
         view.findViewById<FloatingActionButton>(R.id.add_task).setOnClickListener {
-            val task = Task()
-            taskListViewModel.addTask(task)
-            findNavController().navigate(
-                TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
-            )
+            val taskTitle = newTaskEdit.text.toString()
+            if (taskTitle.isEmpty()) {
+                val task = Task()
+                taskListViewModel.addTask(task)
+                findNavController().navigate(
+                    TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
+                )
+            } else {
+                val task = Task(titile = taskTitle)
+                taskListViewModel.addTask(task)
+                newTaskEdit.setText("")
+            }
         }
 
         return view

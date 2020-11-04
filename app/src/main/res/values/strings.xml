@@ -34,4 +34,5 @@
     <string name="discard_changes">Discard Changes</string>
     <string name="done">Done</string>
     <string name="delete_the_task">Delete the task</string>
+    <string name="new_task">New Task</string>
 </resources>
