@@ -12,7 +12,7 @@
         app:showAsAction="never" >
         <menu>
             <item android:id="@+id/due_data_option"
-                android:title="@string/due_date"/>
+                android:title="@string/due_date" />
 
             <item android:id="@+id/creation_data_option"
                 android:title="@string/creation_date"/>
@@ -29,7 +29,7 @@
         </menu>
     </item>
 
-    <item android:id="@+id/Setting_by_button"
+    <item android:id="@+id/setting_option"
         android:title="@string/setting"
         app:showAsAction="never" />
 

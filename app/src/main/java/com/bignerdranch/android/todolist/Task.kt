@@ -20,3 +20,8 @@ data class Task(
 enum class Status{
     Achieved, Upcoming, Overdue, InProgress, SomeDay
 }
+
+enum class SortOptionStatus{
+    IDLE, DES, AES
+
+}

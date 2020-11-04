@@ -24,6 +24,7 @@ private const val DATE_FORMAT = "EEEE dd/MM/yy"
 
 class TaskListFragment:Fragment() {
 
+    private lateinit var menu:Menu
     private lateinit var newTaskEdit:EditText
     private lateinit var taskRecyclerView: RecyclerView
     private var taskAdapter: TaskAdapter? = TaskAdapter(emptyList())
@@ -31,6 +32,8 @@ class TaskListFragment:Fragment() {
         ViewModelProvider(this).get(TaskListViewModel::class.java)
     }
     private val taskChangesMap:MutableMap<UUID, Task?> = emptyMap<UUID, Task>().toMutableMap()
+    private val sortByState :MutableList<SortOptionStatus> =
+        listOf(SortOptionStatus.IDLE, SortOptionStatus.IDLE).toMutableList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,6 +74,68 @@ class TaskListFragment:Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_task_list, menu)
+        this.menu = menu
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
+        R.id.due_data_option -> {
+            sortByState[0] = sortByState[0].next()
+            when (sortByState[0]) {
+                SortOptionStatus.DES -> {
+                    taskAdapter?.tasks?.let { tasks ->
+                        sortByState[1] = SortOptionStatus.IDLE
+                        menu.findItem(R.id.creation_data_option).setIcon(0)
+                        taskAdapter?.tasks = tasks.sortedByDescending { it.date }
+                        taskRecyclerView.adapter = taskAdapter
+                        item.setIcon(R.drawable.ic_double_arrow_down)
+                    }
+                    true
+                }
+                SortOptionStatus.AES -> {
+                    taskAdapter?.tasks?.let { tasks ->
+                        taskAdapter?.tasks = tasks.sortedBy { it.date }
+                        taskRecyclerView.adapter = taskAdapter
+                        item.setIcon(R.drawable.ic_double_arrow_up)
+                    }
+                    true
+                }
+                SortOptionStatus.IDLE -> {
+                    item.setIcon(0)
+                    true
+                }
+            }
+        }
+        R.id.creation_data_option -> {
+            sortByState[1] = sortByState[1].next()
+            when (sortByState[1]) {
+                SortOptionStatus.DES -> {
+                taskAdapter?.tasks?.let { tasks ->
+                    sortByState[0] = SortOptionStatus.IDLE
+                    menu.findItem(R.id.due_data_option).setIcon(0)
+                    taskAdapter?.tasks = tasks.sortedByDescending { it.creationDate }
+                    taskRecyclerView.adapter = taskAdapter
+                    item.setIcon(R.drawable.ic_double_arrow_down)
+                }
+                true
+            }
+            SortOptionStatus.AES -> {
+                taskAdapter?.tasks?.let { tasks ->
+                    taskAdapter?.tasks = tasks.sortedBy { it.creationDate }
+                    taskRecyclerView.adapter = taskAdapter
+                    item.setIcon(R.drawable.ic_double_arrow_up)
+                }
+                true
+            }
+            SortOptionStatus.IDLE -> {
+                item.setIcon(0)
+                true
+            }
+        }
+        }
+        R.id.setting_option -> true
+        else -> super.onOptionsItemSelected(item)
+
+
     }
 
     override fun onStart() {
@@ -217,5 +282,12 @@ class TaskListFragment:Fragment() {
 
         override fun getSwipeVelocityThreshold(defaultValue: Float): Float = 10F
         override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.3F
+
+    }
+
+    inline fun <reified T: Enum<T>> T.next(): T {
+        val values = enumValues<T>()
+        val nextOrdinal = (ordinal + 1) % values.size
+        return values[nextOrdinal]
     }
 }
