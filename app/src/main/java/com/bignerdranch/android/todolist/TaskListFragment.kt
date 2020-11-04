@@ -1,11 +1,14 @@
 package com.bignerdranch.android.todolist
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StrikethroughSpan
 import android.view.*
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.RadioButton
-import android.widget.TextView
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
+import android.widget.*
+import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.navArgument
@@ -22,7 +25,7 @@ class TaskListFragment:Fragment() {
     private val taskListViewModel: TaskListViewModel by lazy {
         ViewModelProvider(this).get(TaskListViewModel::class.java)
     }
-    private val taskChangesMap:MutableMap<UUID, Task> = emptyMap<UUID, Task>().toMutableMap()
+    private val taskChangesMap:MutableMap<UUID, Task?> = emptyMap<UUID, Task>().toMutableMap()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +69,7 @@ class TaskListFragment:Fragment() {
     override fun onStop() {
         super.onStop()
         taskListViewModel.updateTasks(taskChangesMap)
+        taskChangesMap.clear()
     }
 
     private fun updateUI(tasks: List<Task>){
@@ -85,23 +89,48 @@ class TaskListFragment:Fragment() {
         private val tagText: TextView = view.findViewById(R.id.text_tag)
         private val dateText: TextView = view.findViewById(R.id.text_date)
         private val statusText: TextView = view.findViewById(R.id.text_status)
+        private val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
 
         init {
             view.setOnClickListener(this)
             isTaskDoneCheckBox.apply {
                 setOnClickListener {
-                    if (this.isChecked)task.status = Status.Done
-                    else task.status = Status.InProgress
+                    val spannable = SpannableString(task.titile)
+                    titleText.text = spannable
+                    if (this.isChecked){
+                        task.status = Status.Done
+                        spannable.setSpan(StrikethroughSpan(), 0, task.titile.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                        deleteButton.visibility = VISIBLE
+                    }
+                    else {
+                        task.status = Status.InProgress
+                        deleteButton.visibility = INVISIBLE
+                    }
                     taskChangesMap[task.id] = task
+                    titleText.text = spannable
                 }
+            }
+
+            deleteButton.setOnClickListener {
+                taskChangesMap[task.id] = null
+                taskAdapter?.removeWithId(task.id)
+                taskRecyclerView.adapter = taskAdapter
             }
         }
 
         fun bind(task: Task){
             this.task = task
-            isTaskDoneCheckBox.isChecked = task.status.ordinal == 0
-            titleText.text = task.titile
+            val spannable = SpannableString(task.titile)
+
+            if (task.status.ordinal == 0){
+                isTaskDoneCheckBox.isChecked = true
+                spannable.setSpan(StrikethroughSpan(), 0, task.titile.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                deleteButton.visibility = VISIBLE
+            }
+            titleText.text = spannable
             dateText.text = task.date?.toString()?:""
+            statusText.text = task.status.toString()
+
         }
 
         override fun onClick(v: View?) {
@@ -122,6 +151,17 @@ class TaskListFragment:Fragment() {
             holder.bind(tasks[position])
         }
         override fun getItemCount(): Int = tasks.size
+
+        fun removeWithId(id: UUID){
+            val position = tasks.indexOf(tasks.first { task -> task.id == id })
+            taskListViewModel.deleteTask(tasks[position])
+            tasks = tasks.toMutableList().apply {
+                removeAt(position)
+                toList()
+            }
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, tasks.size)
+        }
 
     }
 }

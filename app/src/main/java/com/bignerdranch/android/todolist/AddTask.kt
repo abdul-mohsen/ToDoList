@@ -2,7 +2,6 @@ package com.bignerdranch.android.todolist
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -120,7 +119,6 @@ class AddTask:Fragment() {
             findNavController().navigate(
                 AddTaskDirections.actionAddTaskToDatePickerFragment(taskDate = task.date, key = DATE_KEY)
             )
-
         }
     }
 
@@ -129,7 +127,7 @@ class AddTask:Fragment() {
         (activity as AppCompatActivity).supportActionBar?.show()
     }
 
-    fun updateUI(){
+    private fun updateUI(){
         creationDateText.text = task.creationDate.toString()
         titleEdit.setText(task.titile)
         dueDateText.text = task.date?.toString()?:"Date"

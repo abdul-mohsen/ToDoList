@@ -22,4 +22,8 @@ class TaskListViewModel: ViewModel() {
             }
         }
     }
+
+    fun deleteTask(task: Task){
+        taskRepository.deleteTask(task)
+    }
 }
