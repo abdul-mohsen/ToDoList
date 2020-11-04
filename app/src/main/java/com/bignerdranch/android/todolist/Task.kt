@@ -18,5 +18,5 @@ data class Task(
 ) : Parcelable
 
 enum class Status{
-    Done, Upcoming, Overdue, InProgress
+    Achieved, Upcoming, Overdue, InProgress, SomeDay
 }

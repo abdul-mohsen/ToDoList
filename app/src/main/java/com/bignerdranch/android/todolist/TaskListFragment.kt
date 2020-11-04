@@ -119,6 +119,7 @@ class TaskListFragment:Fragment() {
                 deleteButton.visibility = VISIBLE
                 titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_gray))
             } else {
+                changeState()
                 deleteButton.visibility = INVISIBLE
                 titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.black))
             }
@@ -131,7 +132,9 @@ class TaskListFragment:Fragment() {
         }
 
         fun changeState(state:Boolean = false) {
-            task.status = if (state) Status.Done
+            task.status = if (state) Status.Achieved
+            else if (task.date == null) Status.SomeDay
+            else if(Date().before(task.date)) Status.Overdue
             else Status.InProgress
         }
 
