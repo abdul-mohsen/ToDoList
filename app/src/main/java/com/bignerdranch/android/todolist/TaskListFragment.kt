@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.*
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.task_item.*
 import java.util.*
 
 private const val DATE_FORMAT = "EEEE dd/MM/yy"
@@ -26,6 +28,7 @@ class TaskListFragment:Fragment() {
 
     private lateinit var menu:Menu
     private lateinit var newTaskEdit:EditText
+    private lateinit var addTaskButton: FloatingActionButton
     private lateinit var taskRecyclerView: RecyclerView
     private var taskAdapter: TaskAdapter? = TaskAdapter(emptyList())
     private val taskListViewModel: TaskListViewModel by lazy {
@@ -53,20 +56,7 @@ class TaskListFragment:Fragment() {
         helper?.attachToRecyclerView(taskRecyclerView)
 
         newTaskEdit = view.findViewById<EditText>(R.id.new_task_edit)
-        view.findViewById<FloatingActionButton>(R.id.add_task).setOnClickListener {
-            val taskTitle = newTaskEdit.text.toString()
-            if (taskTitle.isEmpty()) {
-                val task = Task()
-                taskListViewModel.addTask(task)
-                findNavController().navigate(
-                    TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
-                )
-            } else {
-                val task = Task(titile = taskTitle)
-                taskListViewModel.addTask(task)
-                newTaskEdit.setText("")
-            }
-        }
+        addTaskButton = view.findViewById<FloatingActionButton>(R.id.add_task)
 
         return view
     }
@@ -148,6 +138,33 @@ class TaskListFragment:Fragment() {
                 }
             }
         )
+
+        addTaskButton.setOnClickListener {
+                val taskTitle = newTaskEdit.text.toString()
+                if (taskTitle.isEmpty()) {
+                    val task = Task()
+                    taskListViewModel.addTask(task)
+                    findNavController().navigate(
+                        TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
+                    )
+                } else {
+                    val task = Task(titile = taskTitle)
+                    taskListViewModel.addTask(task)
+                    newTaskEdit.setText("")
+                }
+            }
+
+        newTaskEdit.setOnEditorActionListener { v, actionId, event ->
+            if (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE)) {
+                val taskTitle = newTaskEdit.text.toString()
+                if (taskTitle.isBlank()) {
+                    val task = Task(titile = taskTitle)
+                    taskListViewModel.addTask(task)
+                    newTaskEdit.setText("")
+                }
+            }
+            false
+        }
     }
 
     override fun onStop() {
