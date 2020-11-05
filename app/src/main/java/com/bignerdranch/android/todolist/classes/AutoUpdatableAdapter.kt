@@ -1,4 +1,4 @@
-package com.bignerdranch.android.todolist
+package com.bignerdranch.android.todolist.classes
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView

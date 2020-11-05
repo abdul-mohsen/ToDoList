@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="com.bignerdranch.android.todolist.TaskListFragment"
+        android:name="com.bignerdranch.android.todolist.taskList.TaskListFragment"
         android:label="TaskListFragment"
         tools:layout="@layout/fragment_task_list">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/addTask"
-        android:name="com.bignerdranch.android.todolist.AddTask"
+        android:name="com.bignerdranch.android.todolist.addTask.AddTask"
         android:label="AddTask"
         tools:layout="@layout/fragment_add_task">
         <argument
@@ -28,7 +28,7 @@
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"
-        android:name="com.bignerdranch.android.todolist.DatePickerFragment"
+        android:name="com.bignerdranch.android.todolist.addTask.DatePickerFragment"
         android:label="DatePickerFragment" >
         <argument
             android:name="taskDate"

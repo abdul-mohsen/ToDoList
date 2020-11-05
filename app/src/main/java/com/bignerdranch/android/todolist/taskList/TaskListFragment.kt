@@ -1,4 +1,4 @@
-package com.bignerdranch.android.todolist
+package com.bignerdranch.android.todolist.taskList
 
 import android.graphics.Canvas
 import android.os.Bundle
@@ -20,6 +20,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
+import com.bignerdranch.android.todolist.*
+import com.bignerdranch.android.todolist.classes.AutoUpdatableAdapter
+import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.properties.Delegates
@@ -198,11 +201,11 @@ class TaskListFragment:Fragment() {
             if (task.status.ordinal == 0){
                 spannable.setSpan(StrikethroughSpan(), 0, task.titile.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 deleteButton.visibility = VISIBLE
-                titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.light_gray))
+                titleText.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
             } else {
                 changeState()
                 deleteButton.visibility = INVISIBLE
-                titleText.setTextColor(ContextCompat.getColor(requireContext(),R.color.black))
+                titleText.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             }
             titleText.text = spannable
             dateText.text = getString(R.string.date)
@@ -228,7 +231,7 @@ class TaskListFragment:Fragment() {
 
     private inner class TaskAdapter
         : ListAdapter<Task, TaskHolder>(TaskItemDiffCallback()),
-        AutoUpdatableAdapter{
+        AutoUpdatableAdapter {
 
         var tasks: List<Task> by Delegates.observable(emptyList()) { prop, oldList, newList ->
             autoNotify(oldList, newList) { o, n -> o.id == n.id }
@@ -304,11 +307,7 @@ class TaskListFragment:Fragment() {
 
     }
 
-    inline fun <reified T: Enum<T>> T.next(): T {
-        val values = enumValues<T>()
-        val nextOrdinal = (ordinal + 1) % values.size
-        return values[nextOrdinal]
-    }
+
 
     private fun updateUI(tasks: List<Task>){
         taskAdapter.tasks = tasks

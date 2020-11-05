@@ -2,10 +2,9 @@ package com.bignerdranch.android.todolist.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.bignerdranch.android.todolist.Tag
-import com.bignerdranch.android.todolist.Task
-import com.bignerdranch.android.todolist.TaskTagCrossRef
-import com.bignerdranch.android.todolist.TaskWithTags
+import com.bignerdranch.android.todolist.classes.Tag
+import com.bignerdranch.android.todolist.classes.Task
+import com.bignerdranch.android.todolist.classes.TaskTagCrossRef
 import java.util.*
 
 @Dao
@@ -40,10 +39,10 @@ interface TaskDao {
 
 
     @Update
-    fun updateTask(task:Task)
+    fun updateTask(task: Task)
 
     @Insert
-    fun insertTask(task:Task)
+    fun insertTask(task: Task)
 
     @Delete
     fun deleteTask(task: Task)

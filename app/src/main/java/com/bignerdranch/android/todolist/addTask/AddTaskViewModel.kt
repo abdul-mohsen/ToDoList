@@ -1,6 +1,7 @@
-package com.bignerdranch.android.todolist
+package com.bignerdranch.android.todolist.addTask
 
 import androidx.lifecycle.*
+import com.bignerdranch.android.todolist.classes.Task
 import com.bignerdranch.android.todolist.database.TaskRepository
 import java.util.*
 

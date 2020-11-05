@@ -1,4 +1,4 @@
-package com.bignerdranch.android.todolist
+package com.bignerdranch.android.todolist.addTask
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -7,13 +7,16 @@ import android.text.format.DateFormat
 import android.text.style.ImageSpan
 import android.util.Log
 import android.view.*
-import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bignerdranch.android.todolist.AddTaskArgs
+import com.bignerdranch.android.todolist.AddTaskDirections
+import com.bignerdranch.android.todolist.R
+import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
@@ -25,7 +28,7 @@ private const val DATE_FORMAT = "EEEE dd/MM/yy"
 
 class AddTask:Fragment() {
 
-    private lateinit var task:Task
+    private lateinit var task: Task
     private lateinit var doneButton: ImageButton
     private lateinit var discardButton: ImageButton
     private lateinit var titleEdit: EditText
@@ -38,7 +41,7 @@ class AddTask:Fragment() {
     private lateinit var descriptionEdit: EditText
     private lateinit var creationDateText: TextView
     private lateinit var tagAdapter: ArrayAdapter<String>
-    private val taskViewModel:AddTaskViewModel by lazy {
+    private val taskViewModel: AddTaskViewModel by lazy {
         ViewModelProvider(this).get(AddTaskViewModel::class.java)
     }
     private val tagList = listOf("Groceries", "Home", "Work","Groceries123").toMutableList()
@@ -124,7 +127,10 @@ class AddTask:Fragment() {
 
         dueDateText.setOnClickListener {
             findNavController().navigate(
-                AddTaskDirections.actionAddTaskToDatePickerFragment(taskDate = task.date, key = DATE_KEY)
+                AddTaskDirections.actionAddTaskToDatePickerFragment(
+                    taskDate = task.date,
+                    key = DATE_KEY
+                )
             )
         }
 

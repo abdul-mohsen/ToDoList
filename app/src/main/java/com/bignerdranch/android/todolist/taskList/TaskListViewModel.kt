@@ -1,6 +1,7 @@
-package com.bignerdranch.android.todolist
+package com.bignerdranch.android.todolist.taskList
 
 import androidx.lifecycle.ViewModel
+import com.bignerdranch.android.todolist.classes.Task
 import com.bignerdranch.android.todolist.database.TaskRepository
 import java.util.*
 

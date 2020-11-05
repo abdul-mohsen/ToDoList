@@ -3,7 +3,7 @@ package com.bignerdranch.android.todolist.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.bignerdranch.android.todolist.Task
+import com.bignerdranch.android.todolist.classes.Task
 import java.lang.IllegalStateException
 import java.util.*
 import java.util.concurrent.Executors
