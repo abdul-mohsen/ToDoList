@@ -17,3 +17,7 @@ inline fun <reified T: Enum<T>> T.next(): T {
 enum class Priority{
     VeryHigh, High, Medium, Low, VeryLow
 }
+
+enum class ItemState{
+    Add, Update, Delete
+}

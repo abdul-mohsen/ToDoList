@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Spanned
 import android.text.format.DateFormat
-import android.text.method.TimeKeyListener
 import android.text.style.ImageSpan
 import android.util.Log
 import android.view.*
@@ -18,13 +17,11 @@ import com.bignerdranch.android.todolist.R
 import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.time.DayOfWeek
-import java.time.MonthDay
 import java.util.*
 
 private const val DATE_KEY = "Date"
 private const val TIME_KEY = "Time"
-private const val DATE_FORMAT = "EEEE dd/MM/yy"
+private const val DATE_FORMAT = "EEEE dd/MM/yy H:m"
 
 class AddTask:Fragment() {
 
@@ -90,10 +87,10 @@ class AddTask:Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.apply {
             getLiveData<Date>(TIME_KEY).observe(
                 viewLifecycleOwner,
-                {
-                    task.date?.apply {
-                        hours = it.hours
-                        minutes = it.minutes
+                {date ->
+                    task.date?.let {
+                        it.hours = date.hours
+                        it.minutes = date.minutes
                     }
                     updateUI()
                 }
@@ -101,9 +98,16 @@ class AddTask:Fragment() {
 
             getLiveData<Date>(DATE_KEY).observe(
                 viewLifecycleOwner,
-                {
-                    task.date = it
-
+                {date ->
+                    if (task.date != null){
+                        val cal = Calendar.getInstance()
+                        val cal2 = Calendar.getInstance()
+                        cal.time = date
+                        cal2.time = task.date!!
+                        cal.set(Calendar.HOUR,cal2.get(Calendar.HOUR))
+                        cal.set(Calendar.HOUR,cal2.get(Calendar.MINUTE))
+                        task.date = cal.time
+                    } else task.date = date
                     updateUI()
                 }
             )

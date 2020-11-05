@@ -19,8 +19,6 @@ class DatePickerFragment: DialogFragment() {
                 previousBackStackEntry?.savedStateHandle?.set(args.key, resultDate)
                 popBackStack()
             }
-
-
         }
 
         val date:Date = args.taskDate?:Date()

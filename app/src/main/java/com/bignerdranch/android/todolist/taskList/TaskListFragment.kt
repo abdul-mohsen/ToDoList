@@ -39,7 +39,7 @@ class TaskListFragment:Fragment() {
     private val taskListViewModel: TaskListViewModel by lazy {
         ViewModelProvider(this).get(TaskListViewModel::class.java)
     }
-    private val taskChangesMap:MutableMap<UUID, Task?> = emptyMap<UUID, Task>().toMutableMap()
+    private val taskChangesMap:MutableMap<UUID, Pair<ItemState,Task>> = emptyMap<UUID, Pair<ItemState,Task>>().toMutableMap()
     private val sortByState :MutableList<SortOptionStatus> =
         listOf(SortOptionStatus.IDLE, SortOptionStatus.IDLE).toMutableList()
 
@@ -152,8 +152,10 @@ class TaskListFragment:Fragment() {
                     )
                 } else {
                     val task = Task(titile = taskTitle)
-                    taskListViewModel.addTask(task)
+                    taskChangesMap[task.id] = Pair(ItemState.Add, task)
+                    (taskRecyclerView.adapter as TaskAdapter).addTask(task)
                     newTaskEdit.setText("")
+                    taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
                 }
             }
 
@@ -162,7 +164,8 @@ class TaskListFragment:Fragment() {
                 val taskTitle = newTaskEdit.text.toString()
                 if (!taskTitle.isBlank()) {
                     val task = Task(titile = taskTitle)
-                    taskListViewModel.addTask(task)
+                    taskChangesMap[task.id] = Pair(ItemState.Add, task)
+                    (taskRecyclerView.adapter as TaskAdapter).addTask(task)
                     newTaskEdit.setText("")
                 }
             }
@@ -189,7 +192,7 @@ class TaskListFragment:Fragment() {
             itemView.setOnClickListener(this)
 
             deleteButton.setOnClickListener {
-                taskChangesMap[task.id] = null
+                taskChangesMap[task.id] = Pair(ItemState.Delete, task)
                 (taskRecyclerView.adapter as TaskAdapter).removeWithId(task.id)
             }
         }
@@ -255,6 +258,17 @@ class TaskListFragment:Fragment() {
                 toList()
             }
         }
+
+        fun addTask(task: Task){
+            tasks = tasks.toMutableList().apply {
+                add(task)
+                toList()
+            }
+        }
+
+        fun loadTask(taskList: List<Task>){
+            tasks = taskList
+        }
     }
     private class TaskItemDiffCallback: DiffUtil.ItemCallback<Task>(){
         override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean =
@@ -309,9 +323,7 @@ class TaskListFragment:Fragment() {
 
 
 
-    private fun updateUI(tasks: List<Task>){
-        taskAdapter.tasks = tasks
-        taskRecyclerView.adapter = taskAdapter
-        taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
+    private fun updateUI(tasks: List<Task>, goDown:Boolean = false){
+        (taskRecyclerView.adapter as TaskAdapter).loadTask(tasks)
     }
 }
