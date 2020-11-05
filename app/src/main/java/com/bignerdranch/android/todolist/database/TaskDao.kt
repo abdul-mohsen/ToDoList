@@ -2,7 +2,10 @@ package com.bignerdranch.android.todolist.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.bignerdranch.android.todolist.Tag
 import com.bignerdranch.android.todolist.Task
+import com.bignerdranch.android.todolist.TaskTagCrossRef
+import com.bignerdranch.android.todolist.TaskWithTags
 import java.util.*
 
 @Dao
@@ -13,6 +16,28 @@ interface TaskDao {
 
     @Query("SELECT * FROM task WHERE id=(:id)")
     fun getTask(id: UUID): LiveData<Task?>
+
+//    @Transaction
+//    @Query("SELECT * FROM Task WHERE id=()")
+//    fun getTaskWithTags(): List<TaskWithTags>
+
+    @Query(
+        "SELECT tagId FROM TaskWithTags" +
+                "INNER JOIN Tag ON Tag.id = TaskWithTags.tagId " +
+                "WHERE id=(:id)"
+    )
+    fun getTaskTags(id: UUID): LiveData<List<Tag>>
+
+    data class TaskWithTags(
+        @Embedded val task: Task,
+        @Relation(
+            parentColumn = "taskId",
+            entityColumn = "tagId",
+            associateBy = Junction(TaskTagCrossRef::class)
+        )
+        val tags: List<Tag>
+    )
+
 
     @Update
     fun updateTask(task:Task)

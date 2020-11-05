@@ -1,8 +1,7 @@
 package com.bignerdranch.android.todolist
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -14,8 +13,27 @@ data class Task(
     var description: String = "",
     var date: Date? = null,
     val creationDate: Date = Date(),
-    var status: Status = Status.InProgress
+    var status: Status = Status.InProgress,
+    var tags: List<Tag> = emptyList()
 ) : Parcelable
+
+
+@Entity(primaryKeys = ["taskId","tagId"])
+@Parcelize
+data class TaskTagCrossRef(
+    val taskId: UUID,
+    val tagId: UUID
+): Parcelable
+
+data class TaskWithTags(
+    @Embedded val task: Task,
+    @Relation(
+        parentColumn = "taskId",
+        entityColumn = "tagId",
+        associateBy = Junction(TaskTagCrossRef::class)
+    )
+    val tags: List<Tag>
+)
 
 enum class Status{
     Achieved, Upcoming, Overdue, InProgress, SomeDay
@@ -23,5 +41,4 @@ enum class Status{
 
 enum class SortOptionStatus{
     IDLE, DES, AES
-
 }

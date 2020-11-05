@@ -154,7 +154,7 @@ class TaskListFragment:Fragment() {
                 }
             }
 
-        newTaskEdit.setOnEditorActionListener { _, actionId, event ->
+        newTaskEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val taskTitle = newTaskEdit.text.toString()
                 if (!taskTitle.isBlank()) {

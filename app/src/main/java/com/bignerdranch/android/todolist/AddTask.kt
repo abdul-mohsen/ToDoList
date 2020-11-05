@@ -7,14 +7,13 @@ import android.text.format.DateFormat
 import android.text.style.ImageSpan
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
@@ -38,10 +37,11 @@ class AddTask:Fragment() {
     private lateinit var dueDateText: TextView
     private lateinit var descriptionEdit: EditText
     private lateinit var creationDateText: TextView
+    private lateinit var tagAdapter: ArrayAdapter<String>
     private val taskViewModel:AddTaskViewModel by lazy {
         ViewModelProvider(this).get(AddTaskViewModel::class.java)
     }
-    private val tagList = listOf("Groceries", "Home", "Work","Groceries123")
+    private val tagList = listOf("Groceries", "Home", "Work","Groceries123").toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val args: AddTaskArgs by navArgs()
@@ -49,6 +49,7 @@ class AddTask:Fragment() {
         task = Task(id = args.taskId)
         (activity as AppCompatActivity).supportActionBar?.hide()
         taskViewModel.loadTask(args.taskId)
+        tagAdapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -127,20 +128,36 @@ class AddTask:Fragment() {
             )
         }
 
-        tagEdit.setAdapter(ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList))
+        tagEdit.setAdapter(tagAdapter)
         tagEdit.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
 
-        tagEdit.setOnItemClickListener { parent, view, position, id ->
+        tagEdit.setOnItemClickListener { _, _, _, _ ->
             val chip = ChipDrawable.createFromResource(requireContext(), R.xml.standalone_chip)
             val text = tagEdit.text
-            val tempTag = text.toString().split(",").last { !it.isBlank() }.trim()
+            val tempTags = text.toString().split(",").map { it.trim() }
+            val tempTag = tempTags.last { !it.isBlank() }
             val startIndex = text.toString().lastIndexOf(tempTag)
             chip.text = tempTag
             chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
             val span = ImageSpan(chip)
             text.setSpan(span, startIndex, startIndex + tempTag.length + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            tagAdapter.clear()
+//            tagAdapter.addAll(tagList)
             Log.d("Plz", "${text.toString()}  $startIndex |$tempTag|")
         }
+
+//        tagEdit.setOnEditorActionListener { _, actionId, _ ->
+//            if (actionId == EditorInfo.IME_ACTION_DONE){
+//                val text = tagEdit.text.toString()
+//                if (!text.isBlank() && text !in tagList) {
+//                    tagList.add(text)
+//                    tagAdapter.add(text)
+//                    tagAdapter.notifyDataSetChanged()
+//                }
+//            }
+//            Log.d("Plz","hmmmm")
+//            false
+//        }
     }
 
     override fun onStop() {
