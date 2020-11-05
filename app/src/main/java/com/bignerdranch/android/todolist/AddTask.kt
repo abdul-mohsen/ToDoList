@@ -2,17 +2,19 @@ package com.bignerdranch.android.todolist
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.Spanned
 import android.text.format.DateFormat
+import android.text.style.ImageSpan
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
@@ -27,7 +29,7 @@ class AddTask:Fragment() {
     private lateinit var doneButton: ImageButton
     private lateinit var discardButton: ImageButton
     private lateinit var titleEdit: EditText
-    private lateinit var tagEdit: EditText
+    private lateinit var tagEdit: AutoCompleteTextView
     private lateinit var subtaskText: TextView
     private lateinit var subtaskEdit: EditText
     private lateinit var timeButton: Button
@@ -38,6 +40,7 @@ class AddTask:Fragment() {
     private val taskViewModel:AddTaskViewModel by lazy {
         ViewModelProvider(this).get(AddTaskViewModel::class.java)
     }
+    private val tagList = listOf("Groceries", "Home", "Work")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val args: AddTaskArgs by navArgs()
@@ -121,6 +124,17 @@ class AddTask:Fragment() {
             findNavController().navigate(
                 AddTaskDirections.actionAddTaskToDatePickerFragment(taskDate = task.date, key = DATE_KEY)
             )
+        }
+
+        tagEdit.setAdapter(ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList))
+
+        tagEdit.setOnItemClickListener { parent, view, position, id ->
+            val chip = ChipDrawable.createFromResource(requireContext(), R.xml.standalone_chip)
+            val text = tagEdit.text
+            chip.text = text.toString()
+            chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
+            val span = ImageSpan(chip)
+            text.setSpan(span, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 
