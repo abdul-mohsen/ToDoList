@@ -155,13 +155,12 @@ class TaskListFragment:Fragment() {
             }
 
         newTaskEdit.setOnEditorActionListener { _, actionId, event ->
-            if (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE)) {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val taskTitle = newTaskEdit.text.toString()
-                if (taskTitle.isBlank()) {
+                if (!taskTitle.isBlank()) {
                     val task = Task(titile = taskTitle)
                     taskListViewModel.addTask(task)
                     newTaskEdit.setText("")
-//                    taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
                 }
             }
             false
