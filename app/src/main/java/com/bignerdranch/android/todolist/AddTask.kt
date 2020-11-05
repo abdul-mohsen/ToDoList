@@ -133,13 +133,13 @@ class AddTask:Fragment() {
         tagEdit.setOnItemClickListener { parent, view, position, id ->
             val chip = ChipDrawable.createFromResource(requireContext(), R.xml.standalone_chip)
             val text = tagEdit.text
-            val tempTag = text.toString().split(",").last { !it.isBlank() }
-            val startIndex = text.toString().indexOf(tempTag)
+            val tempTag = text.toString().split(",").last { !it.isBlank() }.trim()
+            val startIndex = text.toString().lastIndexOf(tempTag)
             chip.text = tempTag
             chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
             val span = ImageSpan(chip)
-            text.setSpan(span, startIndex, startIndex + tempTag.length + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            Log.d("Plz", text.toString())
+            text.setSpan(span, startIndex, startIndex + tempTag.length + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            Log.d("Plz", "${text.toString()}  $startIndex |$tempTag|")
         }
     }
 
