@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_addTask_to_datePickerFragment"
             app:destination="@id/datePickerFragment" />
+        <action
+            android:id="@+id/action_addTask_to_timePickerFragment"
+            app:destination="@id/timePickerFragment" />
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"
@@ -32,6 +35,19 @@
         android:label="DatePickerFragment" >
         <argument
             android:name="taskDate"
+            app:argType="java.util.Date"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="key"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/timePickerFragment"
+        android:name="com.bignerdranch.android.todolist.addTask.TimePickerFragment"
+        android:label="TimePickerFragment" >
+        <argument
+            android:name="date"
             app:argType="java.util.Date"
             app:nullable="true"
             android:defaultValue="@null" />

@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Spanned
 import android.text.format.DateFormat
+import android.text.method.TimeKeyListener
 import android.text.style.ImageSpan
 import android.util.Log
 import android.view.*
@@ -17,12 +18,13 @@ import com.bignerdranch.android.todolist.R
 import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.time.DayOfWeek
+import java.time.MonthDay
 import java.util.*
 
 private const val DATE_KEY = "Date"
+private const val TIME_KEY = "Time"
 private const val DATE_FORMAT = "EEEE dd/MM/yy"
-
-
 
 class AddTask:Fragment() {
 
@@ -86,10 +88,22 @@ class AddTask:Fragment() {
         )
 
         findNavController().currentBackStackEntry?.savedStateHandle?.apply {
+            getLiveData<Date>(TIME_KEY).observe(
+                viewLifecycleOwner,
+                {
+                    task.date?.apply {
+                        hours = it.hours
+                        minutes = it.minutes
+                    }
+                    updateUI()
+                }
+            )
+
             getLiveData<Date>(DATE_KEY).observe(
                 viewLifecycleOwner,
                 {
                     task.date = it
+
                     updateUI()
                 }
             )
@@ -122,6 +136,17 @@ class AddTask:Fragment() {
                     .show()
             }
         }
+
+        timeButton.setOnClickListener {
+            findNavController().navigate(
+                AddTaskDirections.actionAddTaskToTimePickerFragment(
+                    date = task.date,
+                    key = TIME_KEY
+                )
+            )
+
+        }
+
 
         dueDateText.setOnClickListener {
             findNavController().navigate(
