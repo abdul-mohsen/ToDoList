@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Spanned
 import android.text.format.DateFormat
 import android.text.style.ImageSpan
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +30,7 @@ class AddTask:Fragment() {
     private lateinit var doneButton: ImageButton
     private lateinit var discardButton: ImageButton
     private lateinit var titleEdit: EditText
-    private lateinit var tagEdit: AutoCompleteTextView
+    private lateinit var tagEdit: MultiAutoCompleteTextView
     private lateinit var subtaskText: TextView
     private lateinit var subtaskEdit: EditText
     private lateinit var timeButton: Button
@@ -40,7 +41,7 @@ class AddTask:Fragment() {
     private val taskViewModel:AddTaskViewModel by lazy {
         ViewModelProvider(this).get(AddTaskViewModel::class.java)
     }
-    private val tagList = listOf("Groceries", "Home", "Work")
+    private val tagList = listOf("Groceries", "Home", "Work","Groceries123")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val args: AddTaskArgs by navArgs()
@@ -127,14 +128,18 @@ class AddTask:Fragment() {
         }
 
         tagEdit.setAdapter(ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList))
+        tagEdit.setTokenizer(MultiAutoCompleteTextView.CommaTokenizer())
 
         tagEdit.setOnItemClickListener { parent, view, position, id ->
             val chip = ChipDrawable.createFromResource(requireContext(), R.xml.standalone_chip)
             val text = tagEdit.text
-            chip.text = text.toString()
+            val tempTag = text.toString().split(",").last { !it.isBlank() }
+            val startIndex = text.toString().indexOf(tempTag)
+            chip.text = tempTag
             chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
             val span = ImageSpan(chip)
-            text.setSpan(span, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            text.setSpan(span, startIndex, startIndex + tempTag.length + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            Log.d("Plz", text.toString())
         }
     }
 
