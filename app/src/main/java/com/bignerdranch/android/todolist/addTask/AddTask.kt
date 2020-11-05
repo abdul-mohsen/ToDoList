@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.bignerdranch.android.todolist.AddTaskArgs
-import com.bignerdranch.android.todolist.AddTaskDirections
 import com.bignerdranch.android.todolist.R
 import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.chip.ChipDrawable

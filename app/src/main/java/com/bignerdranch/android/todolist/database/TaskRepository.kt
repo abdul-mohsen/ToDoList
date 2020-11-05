@@ -16,7 +16,8 @@ class TaskRepository private constructor(context: Context){
         context.applicationContext,
         TaskDatabase::class.java,
         DATABASE_NAME
-    ).build()
+    ).addMigrations(MIGRATION_1_2)
+        .build()
 
     private val taskDao = database.taskDao()
     private val executor = Executors.newSingleThreadExecutor()
@@ -50,7 +51,7 @@ class TaskRepository private constructor(context: Context){
         }
 
         fun get(): TaskRepository {
-            return INSTANCE?: throw IllegalStateException("The Repo is not init yet")
+            return INSTANCE ?: throw IllegalStateException("The Repo is not init yet")
         }
     }
 

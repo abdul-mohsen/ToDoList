@@ -2,6 +2,7 @@ package com.bignerdranch.android.todolist.classes
 
 import android.os.Parcelable
 import androidx.room.*
+import com.bignerdranch.android.todolist.Priority
 import com.bignerdranch.android.todolist.Status
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -15,5 +16,5 @@ data class Task(
     var date: Date? = null,
     val creationDate: Date = Date(),
     var status: Status = Status.InProgress,
-    var tags: List<Tag> = emptyList()
+    var priority: Priority? = Priority.Medium
 ) : Parcelable

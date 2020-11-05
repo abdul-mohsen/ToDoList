@@ -233,7 +233,7 @@ class TaskListFragment:Fragment() {
         : ListAdapter<Task, TaskHolder>(TaskItemDiffCallback()),
         AutoUpdatableAdapter {
 
-        var tasks: List<Task> by Delegates.observable(emptyList()) { prop, oldList, newList ->
+        var tasks: List<Task> by Delegates.observable(emptyList()) { _, oldList, newList ->
             autoNotify(oldList, newList) { o, n -> o.id == n.id }
         }
 

@@ -16,28 +16,6 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE id=(:id)")
     fun getTask(id: UUID): LiveData<Task?>
 
-//    @Transaction
-//    @Query("SELECT * FROM Task WHERE id=()")
-//    fun getTaskWithTags(): List<TaskWithTags>
-
-    @Query(
-        "SELECT tagId FROM TaskWithTags" +
-                "INNER JOIN Tag ON Tag.id = TaskWithTags.tagId " +
-                "WHERE id=(:id)"
-    )
-    fun getTaskTags(id: UUID): LiveData<List<Tag>>
-
-    data class TaskWithTags(
-        @Embedded val task: Task,
-        @Relation(
-            parentColumn = "taskId",
-            entityColumn = "tagId",
-            associateBy = Junction(TaskTagCrossRef::class)
-        )
-        val tags: List<Tag>
-    )
-
-
     @Update
     fun updateTask(task: Task)
 

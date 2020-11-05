@@ -13,3 +13,7 @@ inline fun <reified T: Enum<T>> T.next(): T {
     val nextOrdinal = (ordinal + 1) % values.size
     return values[nextOrdinal]
 }
+
+enum class Priority{
+    VeryHigh, High, Medium, Low, VeryLow
+}
