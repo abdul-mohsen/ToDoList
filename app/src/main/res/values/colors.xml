@@ -7,5 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_gray">#FF6C6C6C</color>
+    <color name="perdio">#FFF7F2F1</color>
+    <color name="strike">#FF88807E</color>
+    <color name="no_strike">#FF000000</color>
 </resources>

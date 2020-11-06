@@ -71,6 +71,7 @@ class AddTask:Fragment() {
         descriptionEdit = view.findViewById(R.id.description_edit)
         creationDateText = view.findViewById(R.id.creation_date_text)
 
+
         return view
     }
 
@@ -105,7 +106,7 @@ class AddTask:Fragment() {
                         cal.time = date
                         cal2.time = task.date!!
                         cal.set(Calendar.HOUR,cal2.get(Calendar.HOUR))
-                        cal.set(Calendar.HOUR,cal2.get(Calendar.MINUTE))
+                        cal.set(Calendar.MINUTE,cal2.get(Calendar.MINUTE))
                         task.date = cal.time
                     } else task.date = date
                     updateUI()
@@ -140,7 +141,6 @@ class AddTask:Fragment() {
                     .show()
             }
         }
-
         timeButton.setOnClickListener {
             findNavController().navigate(
                 AddTaskDirections.actionAddTaskToTimePickerFragment(
@@ -148,10 +148,7 @@ class AddTask:Fragment() {
                     key = TIME_KEY
                 )
             )
-
         }
-
-
         dueDateText.setOnClickListener {
             findNavController().navigate(
                 AddTaskDirections.actionAddTaskToDatePickerFragment(
