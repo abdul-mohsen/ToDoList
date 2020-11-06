@@ -80,16 +80,14 @@ class TaskListFragment:Fragment() {
                     taskAdapter.tasks.let { tasks ->
                         sortByState[1] = SortOptionStatus.IDLE
                         menu.findItem(R.id.creation_data_option).setIcon(0)
-                        taskAdapter.tasks = tasks.sortedByDescending { it.date }
-                        taskRecyclerView.adapter = taskAdapter
+                        taskAdapter.loadTask(tasks.sortedByDescending { it.date })
                         item.setIcon(R.drawable.ic_double_arrow_down)
                     }
                     true
                 }
                 SortOptionStatus.AES -> {
                     taskAdapter.tasks.let { tasks ->
-                        taskAdapter.tasks = tasks.sortedBy { it.date }
-                        taskRecyclerView.adapter = taskAdapter
+                        taskAdapter.loadTask( tasks.sortedWith(compareBy(nullsLast()){it.date}))
                         item.setIcon(R.drawable.ic_double_arrow_up)
                     }
                     true
@@ -107,16 +105,14 @@ class TaskListFragment:Fragment() {
                     taskAdapter.tasks.let { tasks ->
                         sortByState[0] = SortOptionStatus.IDLE
                         menu.findItem(R.id.due_data_option).setIcon(0)
-                        taskAdapter.tasks = tasks.sortedByDescending { it.creationDate }
-                        taskRecyclerView.adapter = taskAdapter
+                        taskAdapter.loadTask(tasks.sortedByDescending { it.creationDate })
                         item.setIcon(R.drawable.ic_double_arrow_down)
                     }
                 true
             }
             SortOptionStatus.AES -> {
                 taskAdapter.tasks.let { tasks ->
-                    taskAdapter.tasks = tasks.sortedBy { it.creationDate }
-                    taskRecyclerView.adapter = taskAdapter
+                    taskAdapter.loadTask( tasks.sortedWith(compareBy(nullsLast()){it.creationDate}))
                     item.setIcon(R.drawable.ic_double_arrow_up)
                 }
                 true
@@ -153,7 +149,7 @@ class TaskListFragment:Fragment() {
                 } else {
                     val task = Task(titile = taskTitle)
                     taskChangesMap[task.id] = Pair(ItemState.Add, task)
-                    (taskRecyclerView.adapter as TaskAdapter).addTask(task)
+                    taskAdapter.addTask(task)
                     newTaskEdit.setText("")
                     taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
                 }
@@ -165,8 +161,9 @@ class TaskListFragment:Fragment() {
                 if (!taskTitle.isBlank()) {
                     val task = Task(titile = taskTitle)
                     taskChangesMap[task.id] = Pair(ItemState.Add, task)
-                    (taskRecyclerView.adapter as TaskAdapter).addTask(task)
+                    taskAdapter.addTask(task)
                     newTaskEdit.setText("")
+                    taskRecyclerView.smoothScrollToPosition(taskAdapter.tasks.size - 1)
                 }
             }
             false
@@ -193,7 +190,7 @@ class TaskListFragment:Fragment() {
 
             deleteButton.setOnClickListener {
                 taskChangesMap[task.id] = Pair(ItemState.Delete, task)
-                (taskRecyclerView.adapter as TaskAdapter).removeWithId(task.id)
+                taskAdapter.removeWithId(task.id)
             }
         }
 
@@ -221,7 +218,7 @@ class TaskListFragment:Fragment() {
         fun changeState(state:Boolean = false) {
             task.status = if (state) Status.Achieved
             else if (task.date == null) Status.SomeDay
-            else if(Date().before(task.date)) Status.Overdue
+            else if(Date().after(task.date)) Status.Overdue
             else Status.InProgress
         }
 
@@ -324,6 +321,6 @@ class TaskListFragment:Fragment() {
 
 
     private fun updateUI(tasks: List<Task>, goDown:Boolean = false){
-        (taskRecyclerView.adapter as TaskAdapter).loadTask(tasks)
+        taskAdapter.loadTask(tasks)
     }
 }
