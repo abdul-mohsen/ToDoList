@@ -40,9 +40,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text_title"
+        android:layout_alignStart="@+id/text_tag"
         android:layout_toEndOf="@+id/text_title"
-        android:text="@string/status"
-        android:layout_alignStart="@+id/text_tag"/>
+        android:text="@string/status" />
 
     <ImageButton
         android:id="@+id/delete_button"
@@ -52,7 +52,9 @@
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_delete"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:tint="#FF0000"/>
 
 </RelativeLayout>
 

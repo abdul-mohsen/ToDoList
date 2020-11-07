@@ -1,6 +1,7 @@
 package com.bignerdranch.android.todolist.taskList
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.format.DateFormat
@@ -20,6 +21,7 @@ import com.bignerdranch.android.todolist.R
 import com.bignerdranch.android.todolist.Status
 import com.bignerdranch.android.todolist.classes.AutoUpdatableAdapter
 import com.bignerdranch.android.todolist.classes.Task
+import com.bignerdranch.android.todolist.getColorFromAttr
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -96,19 +98,24 @@ class TaskAdapter(private val context: Context, private val taskListFragment: Ta
                 deleteButton.visibility = View.VISIBLE
                 titleText.setTextColor(ContextCompat.getColor(context, R.color.strike))
 
+
             } else {
                 deleteButton.visibility = View.INVISIBLE
-                titleText.setTextColor(ContextCompat.getColor(context, R.color.design_default_color_on_primary))
+                titleText.setTextColor(context.getColorFromAttr(R.attr.colorOnSecondary))
+                task.status = updateState(task)
+
             }
             titleText.text = spannable
-            task.date?.let {
-                dateText.text = DateFormat.format(DATE_FORMAT, it)
+            dateText.text = if (task.date == null){
+                "Date"
+            } else{
+                DateFormat.format(DATE_FORMAT, task.date)
             }
             statusText.text = task.status.toString()
              val cr= when(task.status){
                 Status.Overdue -> R.color.red
                 Status.Achieved -> R.color.green
-                Status.InProgress -> R.color.orange
+                Status.InProgress -> R.color.yellow
                 Status.Upcoming -> R.color.blue
                 Status.SomeDay -> R.color.gray
             }
@@ -123,14 +130,19 @@ class TaskAdapter(private val context: Context, private val taskListFragment: Ta
     }
 
     fun update(adapterPosition: Int, state: Boolean = false){
-        tasks[adapterPosition].status = when {
-            state -> Status.Achieved
-            tasks[adapterPosition].date == null -> Status.SomeDay
-            Date().after(tasks[adapterPosition].date) -> Status.Overdue
-            else -> Status.InProgress
-        }
+        tasks[adapterPosition].status = updateState(tasks[adapterPosition], state)
         taskChangesMap[tasks[adapterPosition].id] = Pair(ItemState.Update, tasks[adapterPosition])
+        notifyItemChanged(adapterPosition)
     }
+
+    private fun updateState(task: Task, state: Boolean = false): Status = when {
+            state -> Status.Achieved
+            task.date == null -> Status.SomeDay
+            Date().after(task.date) -> Status.Overdue
+            else -> Status.InProgress
+
+    }
+
 
 }
 

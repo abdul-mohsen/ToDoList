@@ -19,12 +19,8 @@ class DragManagerAdapter(
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position = viewHolder.absoluteAdapterPosition
         when (direction) {
-                ItemTouchHelper.RIGHT ->{
-                    adapter.update(position, true)
-                    adapter.notifyItemChanged(position)}
-                ItemTouchHelper.LEFT -> {
-                    adapter.update(position, false)
-                    adapter.notifyItemChanged(position)}
+            ItemTouchHelper.RIGHT -> adapter.update(position, true)
+            ItemTouchHelper.LEFT -> adapter.update(position, false)
             else -> Log.d("Testing", "hmmm")
         }
     }

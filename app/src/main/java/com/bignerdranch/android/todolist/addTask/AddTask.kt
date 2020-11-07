@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnNextLayout
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -22,7 +24,7 @@ import java.util.*
 
 private const val DATE_KEY = "Date"
 private const val TIME_KEY = "Time"
-private const val DATE_FORMAT = "EEEE dd/MM/yy H:m"
+private const val DATE_FORMAT = "EEEE dd/MM/yy HH:mm"
 
 class AddTask:Fragment() {
 
@@ -52,7 +54,10 @@ class AddTask:Fragment() {
             task = Task(id = args.taskId!!)
             taskViewModel.loadTask(task.id)
             ItemState.Update
-        } else ItemState.Add
+        } else {
+            task = Task()
+            ItemState.Add
+        }
         (activity as AppCompatActivity).supportActionBar?.hide()
         tagAdapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList)
     }
@@ -75,6 +80,7 @@ class AddTask:Fragment() {
         dueDateText = view.findViewById(R.id.due_date_text)
         descriptionEdit = view.findViewById(R.id.description_edit)
         creationDateText = view.findViewById(R.id.creation_date_text)
+        creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
 
 
         return view
@@ -94,6 +100,7 @@ class AddTask:Fragment() {
             getLiveData<Date>(TIME_KEY).observe(
                 viewLifecycleOwner,
                 {date ->
+                    if (task.date == null) task.date = Date()
                     task.date?.let {
                         it.hours = date.hours
                         it.minutes = date.minutes
@@ -124,9 +131,6 @@ class AddTask:Fragment() {
         super.onStart()
 
         doneButton.setOnClickListener {
-            if (itemState == ItemState.Add) task = Task()
-            task.titile = titleEdit.text.toString()
-            task.description = descriptionEdit.text.toString()
             if (itemState == ItemState.Add) taskViewModel.addTask(task)
             else taskViewModel.updateTask(task)
 
@@ -163,6 +167,14 @@ class AddTask:Fragment() {
                     key = DATE_KEY
                 )
             )
+        }
+
+        titleEdit.doOnTextChanged { text, _, _, _ ->
+            task.titile = text.toString()
+        }
+
+        descriptionEdit.doOnTextChanged { text, _, _, _ ->
+            task.description = text.toString()
         }
 
         tagEdit.setAdapter(tagAdapter)
@@ -203,11 +215,8 @@ class AddTask:Fragment() {
     }
 
     private fun updateUI(){
-        creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
-        titleEdit.setText(task.titile)
-        task.date?.let{
-            dueDateText.text = DateFormat.format(DATE_FORMAT, it)
+        if (task.date != null){
+            dueDateText.text = DateFormat.format(DATE_FORMAT, task.date)
         }
-        descriptionEdit.setText(task.description)
     }
 }
