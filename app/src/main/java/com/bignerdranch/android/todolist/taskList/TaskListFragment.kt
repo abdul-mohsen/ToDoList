@@ -115,10 +115,8 @@ class TaskListFragment:Fragment() {
         addTaskButton.setOnClickListener {
                 val taskTitle = newTaskEdit.text.toString()
                 if (taskTitle.isBlank()) {
-                    val task = Task()
-                    taskListViewModel.addTask(task)
                     findNavController().navigate(
-                        TaskListFragmentDirections.actionTaskListFragmentToAddTask(task.id)
+                        TaskListFragmentDirections.actionTaskListFragmentToAddTask()
                     )
                 } else {
                     quickTask(taskTitle)

@@ -10,10 +10,6 @@ class TaskListViewModel: ViewModel() {
     private val taskRepository = TaskRepository.get()
     val taskLiveDate = taskRepository.getTasks()
 
-    fun addTask(task: Task){
-        taskRepository.addTask(task)
-    }
-
     fun updateTasks(tasks: Map<UUID, Pair<ItemState,Task>>){
         if (tasks.isEmpty()) return
         tasks.forEach{(_, value) -> when(value.first){
@@ -22,9 +18,5 @@ class TaskListViewModel: ViewModel() {
             ItemState.Delete-> taskRepository.deleteTask(value.second)
         }
         }
-    }
-
-    fun deleteTask(task: Task){
-        taskRepository.deleteTask(task)
     }
 }

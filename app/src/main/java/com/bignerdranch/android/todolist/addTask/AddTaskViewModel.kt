@@ -21,4 +21,8 @@ class AddTaskViewModel: ViewModel() {
         taskRepository.updateTask(task)
     }
 
+    fun addTask(task: Task){
+        taskRepository.addTask(task)
+    }
+
 }

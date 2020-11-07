@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bignerdranch.android.todolist.ItemState
 import com.bignerdranch.android.todolist.R
 import com.bignerdranch.android.todolist.classes.Task
 import com.google.android.material.chip.ChipDrawable
@@ -38,6 +39,7 @@ class AddTask:Fragment() {
     private lateinit var descriptionEdit: EditText
     private lateinit var creationDateText: TextView
     private lateinit var tagAdapter: ArrayAdapter<String>
+    private lateinit var itemState: ItemState
     private val taskViewModel: AddTaskViewModel by lazy {
         ViewModelProvider(this).get(AddTaskViewModel::class.java)
     }
@@ -46,9 +48,12 @@ class AddTask:Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val args: AddTaskArgs by navArgs()
         super.onCreate(savedInstanceState)
-        task = Task(id = args.taskId)
+        itemState = if (args.taskId != null){
+            task = Task(id = args.taskId!!)
+            taskViewModel.loadTask(task.id)
+            ItemState.Update
+        } else ItemState.Add
         (activity as AppCompatActivity).supportActionBar?.hide()
-        taskViewModel.loadTask(args.taskId)
         tagAdapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList)
     }
     override fun onCreateView(
@@ -119,9 +124,11 @@ class AddTask:Fragment() {
         super.onStart()
 
         doneButton.setOnClickListener {
+            if (itemState == ItemState.Add) task = Task()
             task.titile = titleEdit.text.toString()
             task.description = descriptionEdit.text.toString()
-            taskViewModel.updateTask(task)
+            if (itemState == ItemState.Add) taskViewModel.addTask(task)
+            else taskViewModel.updateTask(task)
 
             findNavController().navigateUp()
         }

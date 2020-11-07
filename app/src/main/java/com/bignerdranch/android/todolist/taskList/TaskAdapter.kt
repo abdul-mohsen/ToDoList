@@ -105,6 +105,14 @@ class TaskAdapter(private val context: Context, private val taskListFragment: Ta
                 dateText.text = DateFormat.format(DATE_FORMAT, it)
             }
             statusText.text = task.status.toString()
+             val cr= when(task.status){
+                Status.Overdue -> R.color.red
+                Status.Achieved -> R.color.green
+                Status.InProgress -> R.color.orange
+                Status.Upcoming -> R.color.blue
+                Status.SomeDay -> R.color.gray
+            }
+            statusText.setTextColor(ContextCompat.getColor(context, cr))
         }
 
         override fun onClick(v: View?) {
