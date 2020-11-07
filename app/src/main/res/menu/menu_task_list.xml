@@ -12,10 +12,12 @@
         app:showAsAction="never" >
         <menu>
             <item android:id="@+id/due_data_option"
-                android:title="@string/due_date" />
+                android:title="@string/due_date"
+                app:iconTint="?attr/colorOnSecondary"/>
 
             <item android:id="@+id/creation_data_option"
-                android:title="@string/creation_date"/>
+                android:title="@string/creation_date"
+                app:iconTint="?attr/colorOnSecondary"/>
         </menu>
     </item>
 
