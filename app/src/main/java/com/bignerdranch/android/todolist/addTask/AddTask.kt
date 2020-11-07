@@ -29,6 +29,7 @@ private const val DATE_FORMAT = "EEEE dd/MM/yy HH:mm"
 class AddTask:Fragment() {
 
     private lateinit var task: Task
+    private lateinit var oldTask: Task
     private lateinit var doneButton: ImageButton
     private lateinit var discardButton: ImageButton
     private lateinit var titleEdit: EditText
@@ -58,6 +59,7 @@ class AddTask:Fragment() {
             task = Task()
             ItemState.Add
         }
+        oldTask = task.copy()
         (activity as AppCompatActivity).supportActionBar?.hide()
         tagAdapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, tagList)
     }
@@ -92,6 +94,7 @@ class AddTask:Fragment() {
             viewLifecycleOwner,
             { task -> task?.let {
                 this.task = task
+                this.oldTask = task.copy()
                 updateUI()
             }}
         )
@@ -99,12 +102,9 @@ class AddTask:Fragment() {
         findNavController().currentBackStackEntry?.savedStateHandle?.apply {
             getLiveData<Date>(TIME_KEY).observe(
                 viewLifecycleOwner,
-                {date ->
+                {time ->
                     if (task.date == null) task.date = Date()
-                    task.date?.let {
-                        it.hours = date.hours
-                        it.minutes = date.minutes
-                    }
+                    task.date = datePlusTime(task.date!!, time)
                     updateUI()
                 }
             )
@@ -112,19 +112,22 @@ class AddTask:Fragment() {
             getLiveData<Date>(DATE_KEY).observe(
                 viewLifecycleOwner,
                 {date ->
-                    if (task.date != null){
-                        val cal = Calendar.getInstance()
-                        val cal2 = Calendar.getInstance()
-                        cal.time = date
-                        cal2.time = task.date!!
-                        cal.set(Calendar.HOUR,cal2.get(Calendar.HOUR))
-                        cal.set(Calendar.MINUTE,cal2.get(Calendar.MINUTE))
-                        task.date = cal.time
-                    } else task.date = date
+                    task.date = if (task.date != null) datePlusTime(date, task.date!!)
+                    else date
                     updateUI()
                 }
             )
         }
+    }
+
+    private fun datePlusTime(date: Date, time: Date): Date {
+        val cal = Calendar.getInstance()
+        val cal2 = Calendar.getInstance()
+        cal.time = date
+        cal2.time = time
+        cal.set(Calendar.HOUR, cal2.get(Calendar.HOUR))
+        cal.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE))
+        return cal.time
     }
 
     override fun onStart() {
@@ -138,7 +141,7 @@ class AddTask:Fragment() {
         }
 
         discardButton.setOnClickListener{
-            context?.let {
+            context?.let {if (task != oldTask)
                 MaterialAlertDialogBuilder(it)
                     .setTitle("Discard Changes!!")
                     .setMessage("Do you want to discard changes")
@@ -150,6 +153,7 @@ class AddTask:Fragment() {
                         dialogInterface.cancel()
                     }
                     .show()
+                else findNavController().navigateUp()
             }
         }
         timeButton.setOnClickListener {
