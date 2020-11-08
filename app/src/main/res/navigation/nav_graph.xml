@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_taskListFragment_to_addTask"
             app:destination="@id/addTask" />
+        <action
+            android:id="@+id/action_taskListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addTask"
@@ -57,4 +60,8 @@
             android:name="key"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.bignerdranch.android.todolist.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

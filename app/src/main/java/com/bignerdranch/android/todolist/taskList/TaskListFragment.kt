@@ -40,7 +40,6 @@ class TaskListFragment:Fragment() {
         taskRecyclerView.adapter = taskAdapter
         taskRecyclerView.addItemDecoration(
             SimpleDividerItemDecoration(Color.DKGRAY, 0.5,context))
-//        taskRecyclerView.addItemDecoration(DividerItemDecoration(taskRecyclerView.context, DividerItemDecoration.VERTICAL))
         val callback = DragManagerAdapter(
             taskAdapter,
             ItemTouchHelper.ACTION_STATE_IDLE,
@@ -101,7 +100,12 @@ class TaskListFragment:Fragment() {
             SortOptionStatus.IDLE -> { item.setIcon(0);true }
         }
         }
-        R.id.setting_option -> true
+        R.id.setting_option -> {
+            findNavController().navigate(
+                TaskListFragmentDirections.actionTaskListFragmentToSettingsFragment()
+            )
+
+            true }
         else -> super.onOptionsItemSelected(item)
     }
 
