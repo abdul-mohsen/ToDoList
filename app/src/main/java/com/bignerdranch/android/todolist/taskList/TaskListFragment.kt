@@ -1,5 +1,6 @@
 package com.bignerdranch.android.todolist.taskList
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -37,6 +38,9 @@ class TaskListFragment:Fragment() {
         taskAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         taskRecyclerView = view.findViewById(R.id.task_list)
         taskRecyclerView.adapter = taskAdapter
+        taskRecyclerView.addItemDecoration(
+            SimpleDividerItemDecoration(Color.DKGRAY, 0.5,context))
+//        taskRecyclerView.addItemDecoration(DividerItemDecoration(taskRecyclerView.context, DividerItemDecoration.VERTICAL))
         val callback = DragManagerAdapter(
             taskAdapter,
             ItemTouchHelper.ACTION_STATE_IDLE,

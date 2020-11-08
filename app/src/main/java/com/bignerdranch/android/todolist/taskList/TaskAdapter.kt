@@ -139,7 +139,7 @@ class TaskAdapter(private val context: Context, private val taskListFragment: Ta
             state -> Status.Achieved
             task.date == null -> Status.SomeDay
             Date().after(task.date) -> Status.Overdue
-            else -> Status.InProgress
+            else -> Status.Upcoming
 
     }
 
