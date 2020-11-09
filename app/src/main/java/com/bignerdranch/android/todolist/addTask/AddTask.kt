@@ -82,13 +82,13 @@ class AddTask:Fragment() {
         dueDateText = view.findViewById(R.id.due_date_text)
         descriptionEdit = view.findViewById(R.id.description_edit)
         creationDateText = view.findViewById(R.id.creation_date_text)
-        creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         taskViewModel.taskLiveData.observe(
             viewLifecycleOwner,
             { task -> task?.let {
@@ -218,8 +218,12 @@ class AddTask:Fragment() {
     }
 
     private fun updateUI(){
+        titleEdit.setText(task.titile)
+        descriptionEdit.setText(task.description)
         if (task.date != null){
             dueDateText.text = DateFormat.format(DATE_FORMAT, task.date)
         }
+        creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
+
     }
 }
