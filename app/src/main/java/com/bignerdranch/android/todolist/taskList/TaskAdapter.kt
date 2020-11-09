@@ -93,12 +93,10 @@ class TaskAdapter(private val context: Context, private val taskListFragment: Ta
             val spannable = SpannableString(task.titile)
 
 
-            if (task.status.ordinal == 0){
+            if (task.status == Status.Achieved){
                 spannable.setSpan(StrikethroughSpan(), 0, task.titile.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 deleteButton.visibility = View.VISIBLE
                 titleText.setTextColor(ContextCompat.getColor(context, R.color.strike))
-
-
             } else {
                 deleteButton.visibility = View.INVISIBLE
                 titleText.setTextColor(context.getColorFromAttr(R.attr.colorOnSecondary))

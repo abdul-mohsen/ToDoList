@@ -84,7 +84,6 @@ class AddTask:Fragment() {
         creationDateText = view.findViewById(R.id.creation_date_text)
         creationDateText.text = DateFormat.format(DATE_FORMAT, task.creationDate)
 
-
         return view
     }
 
