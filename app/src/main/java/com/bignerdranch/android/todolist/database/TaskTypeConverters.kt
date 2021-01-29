@@ -1,8 +1,8 @@
 package com.bignerdranch.android.todolist.database
 
 import androidx.room.TypeConverter
-import com.bignerdranch.android.todolist.Priority
-import com.bignerdranch.android.todolist.Status
+import com.bignerdranch.android.todolist.model.Priority
+import com.bignerdranch.android.todolist.model.Status
 import java.util.*
 
 class TaskTypeConverters {

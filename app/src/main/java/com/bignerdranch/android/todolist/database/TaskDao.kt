@@ -1,28 +1,26 @@
 package com.bignerdranch.android.todolist.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.bignerdranch.android.todolist.classes.Tag
-import com.bignerdranch.android.todolist.classes.Task
-import com.bignerdranch.android.todolist.classes.TaskTagCrossRef
+import com.bignerdranch.android.todolist.model.Task
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 @Dao
 interface TaskDao {
 
     @Query("SELECT * FROM task")
-    fun getTasks(): LiveData<List<Task>>
+    fun getTasks(): Flow<List<Task>>
 
     @Query("SELECT * FROM task WHERE id=(:id)")
-    fun getTask(id: UUID): LiveData<Task?>
+    fun getTask(id: UUID): Flow<Task?>
 
     @Update
-    fun updateTask(task: Task)
+    suspend fun updateTask(task: Task)
 
-    @Insert
-    fun insertTask(task: Task)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: Task)
 
     @Delete
-    fun deleteTask(task: Task)
+    suspend fun deleteTask(task: Task)
 
 }

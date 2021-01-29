@@ -1,10 +1,9 @@
-package com.bignerdranch.android.todolist.classes
+package com.bignerdranch.android.todolist.model
 
 import android.os.Parcelable
-import androidx.room.*
-import com.bignerdranch.android.todolist.Priority
-import com.bignerdranch.android.todolist.Status
-import kotlinx.android.parcel.Parcelize
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Entity

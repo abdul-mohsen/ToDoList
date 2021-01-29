@@ -1,4 +1,4 @@
-package com.bignerdranch.android.todolist.classes
+package com.bignerdranch.android.todolist.model
 
 import androidx.room.Embedded
 import androidx.room.Junction

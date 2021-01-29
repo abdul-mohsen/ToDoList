@@ -1,12 +1,12 @@
-package com.bignerdranch.android.todolist.taskList
+package com.bignerdranch.android.todolist.view.taskList
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 class SimpleDividerItemDecoration(
@@ -40,7 +40,7 @@ class SimpleDividerItemDecoration(
                 .layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
             val bottom = top.toFloat() + pxFromDp(height.toFloat())
-            Log.d("Length", " W = ${pxFromDp(height.toFloat())}")
+            Timber.d("W = ${pxFromDp(height.toFloat())}")
             paint.color = color
             c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom, paint)
         }
