@@ -78,7 +78,7 @@ class TaskAdapter(
             oldItem == newItem
     }
 
-    fun getColor(state: Status) = when(state){
+    fun getColor(state: Status) = when (state) {
         Status.Overdue -> R.color.red
         Status.Achieved -> R.color.green
         Status.InProgress -> R.color.yellow

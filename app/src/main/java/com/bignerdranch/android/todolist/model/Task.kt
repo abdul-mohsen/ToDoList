@@ -12,7 +12,7 @@ data class Task(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     var titile: String = "",
     var description: String = "",
-    var date: Date? = null,
+    var date: Date? = Date(),
     val creationDate: Date = Date(),
     var status: Status = Status.InProgress,
     var priority: Priority? = Priority.Medium

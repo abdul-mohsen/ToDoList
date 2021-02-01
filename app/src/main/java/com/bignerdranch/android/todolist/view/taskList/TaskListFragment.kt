@@ -41,8 +41,8 @@ class TaskListFragment : Fragment() {
         taskAdapter = TaskAdapter(x) { id ->
             taskListViewModel.deleteTask(id)
         }
+        taskListViewModel.getTasks { it.date }
         observeTaskList()
-
     }
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -83,17 +83,13 @@ class TaskListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.due_data_option -> {
-            sortByState[0] = sortByState[0].next()
-            sortByState[1] = SortOptionStatus.IDLE
             menu.findItem(R.id.creation_data_option).setIcon(0)
-//            taskAdapter.tasks.sortingOption(item, sortByState[0]) { it.date }
+            taskListViewModel.getTasks { it.date }
             true
         }
         R.id.creation_data_option -> {
-            sortByState[1] = sortByState[1].next()
-            sortByState[0] = SortOptionStatus.IDLE
             menu.findItem(R.id.due_data_option).setIcon(0)
-//            taskAdapter.tasks.sortingOption(item, sortByState[1]) { it.creationDate }
+            taskListViewModel.getTasks { it.creationDate }
             true
         }
         R.id.setting_option -> {
@@ -102,6 +98,14 @@ class TaskListFragment : Fragment() {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun observeState() {
+        lifecycle.coroutineScope.launchWhenStarted {
+            taskListViewModel.sortByState.collect {
+
+            }
+        }
     }
 
     override fun onStart() {
@@ -136,27 +140,8 @@ class TaskListFragment : Fragment() {
 
     private fun observeTaskList() {
         lifecycle.coroutineScope.launchWhenStarted {
-            taskListViewModel.getTasks().collect { list ->
+            taskListViewModel.tasks.collect { list ->
                 taskAdapter.submitList(list)
-            }
-        }
-    }
-
-    private fun <T : Comparable<T>> Iterable<Task>.sortingOption(
-            item: MenuItem,
-            state: SortOptionStatus,
-            selector: (Task) -> T?) {
-        when (state) {
-            SortOptionStatus.DES -> {
-                item.setIcon(R.drawable.ic_double_arrow_down)
-//                taskAdapter.loadTask(sortedByDescending(selector))
-            }
-            SortOptionStatus.AES -> {
-                item.setIcon(R.drawable.ic_double_arrow_up)
-//                taskAdapter.loadTask(sortedWith(compareBy(nullsLast(), selector)))
-            }
-            SortOptionStatus.IDLE -> {
-                item.setIcon(0)
             }
         }
     }
